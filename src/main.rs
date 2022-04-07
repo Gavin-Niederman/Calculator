@@ -1,6 +1,5 @@
 use std::str::Chars;
 
-#[derive(Debug)]
 enum TokenType {
     LeftParen,
     RightParen,
@@ -11,7 +10,6 @@ enum TokenType {
     Number(i128),
 }
 
-#[derive(Debug)]
 struct Token {
     tokentype: TokenType,
     location: i32,
@@ -57,7 +55,6 @@ impl Scanner {
                 }
             }
         }
-        println!("{:?}", self.tokens);
     }
 
     fn add_token(&mut self, tokentype: TokenType) {
