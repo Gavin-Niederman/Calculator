@@ -7,6 +7,7 @@ enum TokenType {
     Subtract,
     Multiply,
     Divide,
+    Power,
     Number(i128),
 }
 
@@ -20,10 +21,12 @@ struct Scanner {
     tokens: Vec<Token>,
     start: i32,
     current: i32,
+    error: bool,
 }
 
 fn main() {
-    let mut scanner = Scanner::new("1 + 1".to_string());
+    let equation = String::from("1 + 1");
+    let mut scanner = Scanner::new(equation);
     scanner.scan_tokens();
 }
 
@@ -42,8 +45,9 @@ impl Scanner {
                 '-' => self.add_token(TokenType::Subtract),
                 '*' => self.add_token(TokenType::Multiply),
                 '/' => self.add_token(TokenType::Divide),
+                '^' => self.add_token(TokenType::Power),
                 current @ '0'..='9' => {
-                    self.form_numbers(current, &mut chars)
+                    self.number(current, &mut chars)
                 }
                 other => {
                     if other != ' ' {
@@ -51,6 +55,7 @@ impl Scanner {
                             "Unexpected character {} at charachter {}",
                             other, self.current
                         );
+                        self.error = true;
                     }
                 }
             }
@@ -65,10 +70,10 @@ impl Scanner {
     }
 
     fn new(equation: String) -> Scanner {
-        Scanner { equation, tokens: Vec::new(), start: 0, current: 0 }
+        Scanner { equation, tokens: Vec::new(), start: 0, current: 0, error: false }
     }
 
-    fn form_numbers(&mut self, current: char, chars: &mut Chars) {
+    fn number(&mut self, current: char, chars: &mut Chars) {
         let mut number = String::from(current.to_string());
         while chars.clone().next() != None {
             if let '0'..='9' = chars.clone().next().unwrap() {
