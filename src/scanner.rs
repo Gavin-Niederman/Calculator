@@ -1,6 +1,5 @@
 use std::str::Chars;
 
-#[derive(Debug)]
 pub enum TokenType {
     LeftParen,
     RightParen,
@@ -12,7 +11,6 @@ pub enum TokenType {
     Number(i128),
 }
 
-#[derive(Debug)]
 pub struct Token {
     pub tokentype: TokenType,
     pub location: i32,
