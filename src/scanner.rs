@@ -1,5 +1,3 @@
-use std::str::Chars;
-
 pub enum TokenType {
     LeftParen,
     RightParen,
@@ -16,8 +14,8 @@ pub struct Token {
     pub location: i32,
 }
 
-pub struct Scanner {
-    pub equation: String,
+pub struct Scanner<S> {
+    pub source: S,
     pub tokens: Vec<Token>,
     pub start: i32,
     pub current: i32,
@@ -25,15 +23,15 @@ pub struct Scanner {
 }
 
 
-impl Scanner {
+impl<S> Scanner<S> 
+where 
+    S: Iterator<Item = char> + Clone
+{
     pub fn scan_tokens(&mut self) {
-        let clone = self.equation.clone();
-        let mut chars = clone.chars();
-
-        while chars.clone().next() != None {
+        while self.source.clone().next() != None {
             self.current += 1;
             self.start = self.current;
-            match chars.next().unwrap() {
+            match self.source.next().unwrap() {
                 '(' => self.add_token(TokenType::LeftParen),
                 ')' => self.add_token(TokenType::RightParen),
                 '+' => self.add_token(TokenType::Add),
@@ -42,7 +40,7 @@ impl Scanner {
                 '/' => self.add_token(TokenType::Divide),
                 '^' => self.add_token(TokenType::Power),
                 current @ '0'..='9' => {
-                    self.number(current, &mut chars)
+                    self.number(current)
                 }
                 other => {
                     if other != ' ' {
@@ -64,16 +62,16 @@ impl Scanner {
         })
     }
 
-    pub fn new(equation: String) -> Scanner {
-        Scanner { equation, tokens: Vec::new(), start: 0, current: 0, error: false }
+    pub fn new(source: S) -> Scanner<S> {
+        Scanner { source, tokens: Vec::new(), start: 0, current: 0, error: false }
     }
 
-    pub fn number(&mut self, current: char, chars: &mut Chars) {
+    pub fn number(&mut self, current: char) {
         let mut number = String::from(current.to_string());
-        while chars.clone().next() != None {
-            if let '0'..='9' = chars.clone().next().unwrap() {
+        while self.source.clone().next() != None {
+            if let '0'..='9' = self.source.clone().next().unwrap() {
                 self.current += 1;
-                number += &chars.next().unwrap().to_string();  
+                number += &self.source.next().unwrap().to_string();  
             } else {
                 break;
             }

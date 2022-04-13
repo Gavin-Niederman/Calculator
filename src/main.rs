@@ -1,4 +1,3 @@
 fn main() {
-    let equation = String::from("1 + 1");
-    calculator::run(equation);
+calculator::run("1 + 1");
 }
