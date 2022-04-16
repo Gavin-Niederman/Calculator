@@ -6,6 +6,7 @@ pub enum TokenType {
     Multiply,
     Divide,
     Power,
+    Negate,
     Number(i128),
 }
 
@@ -38,6 +39,7 @@ where
                 '-' => self.add_token(TokenType::Subtract),
                 '*' => self.add_token(TokenType::Multiply),
                 '/' => self.add_token(TokenType::Divide),
+                '!' => self.add_token(TokenType::Negate),
                 '^' => self.add_token(TokenType::Power),
                 current @ '0'..='9' => {
                     self.number(current)

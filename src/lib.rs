@@ -1,4 +1,5 @@
 mod scanner;
+mod parser;
 use scanner::Scanner;
 
 pub fn run(equation: &str) {
