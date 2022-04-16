@@ -28,8 +28,11 @@ impl<S> Scanner<S>
 where 
     S: Iterator<Item = char> + Clone
 {
+    //TODO add error handling
+    //Iterates over source and converts it into tokens
     pub fn scan_tokens(&mut self) {
         while self.source.clone().next() != None {
+            //Store location data for forming tokens
             self.current += 1;
             self.start = self.current;
             match self.source.next().unwrap() {
@@ -42,8 +45,10 @@ where
                 '!' => self.add_token(TokenType::Negate),
                 '^' => self.add_token(TokenType::Power),
                 current @ '0'..='9' => {
+                    //Iterates over the source untill the next character is not a number
                     self.number(current)
                 }
+                //Ignores whitespace
                 other => {
                     if other != ' ' {
                         eprintln!(
@@ -57,6 +62,7 @@ where
         }
     }
 
+    //Adds a token to the vector of tokens in scanner
     pub fn add_token(&mut self, tokentype: TokenType) {
         self.tokens.push(Token {
             tokentype,
@@ -64,12 +70,16 @@ where
         })
     }
 
+    //Returns a scanner
     pub fn new(source: S) -> Scanner<S> {
         Scanner { source, tokens: Vec::new(), start: 0, current: 0, error: false }
     }
 
+    //Iterates over source until the next character is not a number
+    //Adds numbers to a string which is parsed when a character that is not part of a number is found
     pub fn number(&mut self, current: char) {
         let mut number = String::from(current.to_string());
+        //Check next character and deal with it accordingly
         while self.source.clone().next() != None {
             if let '0'..='9' = self.source.clone().next().unwrap() {
                 self.current += 1;
@@ -78,6 +88,7 @@ where
                 break;
             }
         }
+        //Add finished number token
         self.add_token(TokenType::Number(
             number
                 .parse()
