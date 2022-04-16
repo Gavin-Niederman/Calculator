@@ -45,7 +45,6 @@ where
                 '!' => self.add_token(TokenType::Negate),
                 '^' => self.add_token(TokenType::Power),
                 current @ '0'..='9' => {
-                    //Iterates over the source untill the next character is not a number
                     self.number(current)
                 }
                 //Ignores whitespace
