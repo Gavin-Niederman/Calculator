@@ -7,5 +7,6 @@ enum Expr {
     Divide(Box<Expr>, Token, Box<Expr>),
     Power(Box<Expr>, Token, Box<Expr>),
     Negate(Token, Box<Expr>),
-    Number(Token)
+    Number(Token),
+    Grouping(Box<Expr>)
 }
