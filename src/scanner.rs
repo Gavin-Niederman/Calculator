@@ -62,7 +62,7 @@ where
     }
 
     //Adds a token to the vector of tokens in scanner
-    pub fn add_token(&mut self, tokentype: TokenType) {
+    fn add_token(&mut self, tokentype: TokenType) {
         self.tokens.push(Token {
             tokentype,
             location: self.current,
@@ -76,7 +76,7 @@ where
 
     //Iterates over source until the next character is not a number
     //Adds numbers to a string which is parsed when a character that is not part of a number is found
-    pub fn number(&mut self, current: char) {
+    fn number(&mut self, current: char) {
         let mut number = String::from(current.to_string());
         //Check next character and deal with it accordingly
         while self.source.clone().next() != None {
