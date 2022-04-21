@@ -10,3 +10,14 @@ enum Expr {
     Number(Token),
     Grouping(Box<Expr>)
 }
+
+pub struct Parser {
+    pub tokens: Vec<Token>
+}
+
+impl Parser {
+    pub fn new<S>(scanner: scanner::Scanner<S>) -> Parser {
+        Parser { tokens: scanner.tokens }
+    }
+}
+
