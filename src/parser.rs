@@ -12,12 +12,28 @@ enum Expr {
 }
 
 pub struct Parser {
-    pub tokens: Vec<Token>
+    pub tokens: Vec<Token>,
+    pub current: usize
 }
 
 impl Parser {
     pub fn new<S>(scanner: scanner::Scanner<S>) -> Parser {
-        Parser { tokens: scanner.tokens }
+        Parser { tokens: scanner.tokens, current: 0 }
     }
+
+    fn peek(&mut self, tokentype: scanner::TokenType) -> bool {
+        if self.tokens[self.current].token_type() == tokentype {
+            return true;
+        }
+        false
+    }
+
+    fn term() {}
+
+    fn factor() {}
+
+    fn unary() {}
+
+    fn primary() {}
 }
 

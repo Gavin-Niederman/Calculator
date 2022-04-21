@@ -1,3 +1,4 @@
+#[derive(PartialEq, Clone, Copy)]
 pub enum TokenType {
     LeftParen,
     RightParen,
@@ -93,5 +94,11 @@ where
                 .parse()
                 .expect("Internal error! Failed to parse number"),
         ))
+    }
+}
+
+impl Token {
+    pub fn token_type(&self) -> TokenType {
+        self.tokentype
     }
 }
