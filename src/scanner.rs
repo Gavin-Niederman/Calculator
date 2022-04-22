@@ -9,6 +9,7 @@ pub enum TokenType {
     Power,
     Negate,
     Number(i128),
+    Eos
 }
 
 pub struct Token {
@@ -60,6 +61,7 @@ where
                 }
             }
         }
+        self.add_token(TokenType::Eos);
     }
 
     //Adds a token to the vector of tokens in scanner

@@ -21,7 +21,11 @@ impl Parser {
         Parser { tokens: scanner.tokens, current: 0 }
     }
 
-    fn peek(&mut self, tokentype: scanner::TokenType) -> bool {
+    fn is_at_end(&self) -> bool {
+        self.peek(scanner::TokenType::Eos)
+    }
+
+    fn peek(&self, tokentype: scanner::TokenType) -> bool {
         if self.tokens[self.current].token_type() == tokentype {
             return true;
         }
