@@ -12,6 +12,7 @@ pub enum TokenType {
     Eos
 }
 
+#[derive(Clone, Copy)]
 pub struct Token {
     pub tokentype: TokenType,
     pub location: i32,
@@ -30,7 +31,7 @@ impl<S> Scanner<S>
 where 
     S: Iterator<Item = char> + Clone
 {
-    //TODO add error handling
+    //TODO add error handling and negatives
     //Iterates over source and converts it into tokens
     pub fn scan_tokens(&mut self) {
         while self.source.clone().next() != None {
