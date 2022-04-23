@@ -1,4 +1,4 @@
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub enum TokenType {
     LeftParen,
     RightParen,
@@ -12,7 +12,7 @@ pub enum TokenType {
     Eos
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Token {
     pub tokentype: TokenType,
     pub location: i32,
@@ -97,11 +97,5 @@ where
                 .parse()
                 .expect("Internal error! Failed to parse number"),
         ))
-    }
-}
-
-impl Token {
-    pub fn token_type(&self) -> TokenType {
-        self.tokentype
     }
 }

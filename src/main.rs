@@ -1,3 +1,3 @@
 fn main() {
-calculator::run("1 + 1");
+calculator::run("(2 + 2)");
 }
