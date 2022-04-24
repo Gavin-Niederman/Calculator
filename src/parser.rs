@@ -6,7 +6,7 @@ pub enum Expr {
     Subtract(Box<Expr>, Token, Box<Expr>),
     Multiply(Box<Expr>, Token, Box<Expr>),
     Divide(Box<Expr>, Token, Box<Expr>),
-    //Power(Box<Expr>, Token, Box<Expr>),
+    Power(Box<Expr>, Token, Box<Expr>),
     Negate(Token, Box<Expr>),
     Number(Token),
     Grouping(Box<Expr>)
@@ -48,7 +48,6 @@ impl Parser {
         Err("Token not found")
     }
 
-    //TODO implement powers
     fn term(&mut self) -> Expr {
         let mut expr = self.factor();
 
@@ -67,9 +66,9 @@ impl Parser {
         }
         expr
     }
-
+    
     fn factor(&mut self) -> Expr {
-        let mut expr = self.unary();
+        let mut expr = self.power();
 
         if self.peek(TokenType::Multiply) == true {
             self.current += 1;
@@ -87,7 +86,19 @@ impl Parser {
         expr
     }
 
-    //TODO add negatives
+    fn power(&mut self) -> Expr {
+        let mut expr = self.unary();
+
+        if self.peek(TokenType::Power) == true {
+            self.current += 1;
+            let operator = self.tokens[self.current];
+            self.current += 1;
+            let right = self.factor();
+            expr = Expr::Power(Box::new(expr), operator, Box::new(right))
+        }
+        expr
+    }
+    
     fn unary(&mut self) -> Expr {
         if self.peek(TokenType::Negate) {
             self.current += 1;
