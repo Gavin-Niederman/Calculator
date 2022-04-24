@@ -9,8 +9,7 @@ pub enum Expr {
     //Power(Box<Expr>, Token, Box<Expr>),
     Negate(Token, Box<Expr>),
     Number(Token),
-    Grouping(Box<Expr>),
-    Eos
+    Grouping(Box<Expr>)
 }
 
 pub struct Parser {
@@ -97,21 +96,21 @@ impl Parser {
             let right = self.unary();
             return Expr::Negate(operator, Box::new(right));
         }
-        self.primary()
+        self.primary().unwrap()
     }
 
-    fn primary(&mut self) -> Expr {
+    fn primary(&mut self) -> Result<Expr, &'static str> {
         if let TokenType::Number(_) = self.tokens[self.current].tokentype {
-            return Expr::Number(self.tokens[self.current]);
+            return Ok(Expr::Number(self.tokens[self.current]));
         }
 
         if self.tokens[self.current].tokentype == TokenType::LeftParen {
             self.current += 1;
             let expr = self.term();
             if self.consume(TokenType::RightParen).unwrap() {
-                return Expr::Grouping(Box::new(expr));
+                return Ok(Expr::Grouping(Box::new(expr)));
             }
         }
-        Expr::Eos
+        Err("Mangled token")
     }
 }

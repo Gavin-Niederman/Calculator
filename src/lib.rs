@@ -7,7 +7,9 @@ use parser::Parser;
 pub fn run(equation: &str) {
     let mut scanner = Scanner::new(equation.chars());
     scanner.scan_tokens();
-    let mut parser = Parser::new(scanner);
-    let expr = parser.parse();
-    println!("{:?}", expr);
+    if !scanner.error {
+        let mut parser = Parser::new(scanner);
+        let expr = parser.parse();
+        println!("{:?}", expr);
+    }
 }
