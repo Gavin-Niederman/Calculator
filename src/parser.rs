@@ -1,13 +1,11 @@
 use super::scanner::{self, Token, TokenType};
 
-#[derive(Debug)]
 pub enum Expr {
-    Add(Box<Expr>, Token, Box<Expr>),
-    Subtract(Box<Expr>, Token, Box<Expr>),
-    Multiply(Box<Expr>, Token, Box<Expr>),
-    Divide(Box<Expr>, Token, Box<Expr>),
-    Power(Box<Expr>, Token, Box<Expr>),
-    Negate(Token, Box<Expr>),
+    Add(Box<Expr>, Box<Expr>),
+    Subtract(Box<Expr>, Box<Expr>),
+    Multiply(Box<Expr>, Box<Expr>),
+    Divide(Box<Expr>, Box<Expr>),
+    Power(Box<Expr>, Box<Expr>),
     Number(Token),
     Grouping(Box<Expr>)
 }
@@ -52,17 +50,13 @@ impl Parser {
         let mut expr = self.factor();
 
         if self.peek(TokenType::Add) == true {
-            self.current += 1;
-            let operator = self.tokens[self.current];
-            self.current += 1;
+            self.current += 2;
             let right = self.factor();
-            expr = Expr::Add(Box::new(expr), operator, Box::new(right))
+            expr = Expr::Add(Box::new(expr), Box::new(right))
         } else if self.peek(TokenType::Subtract) == true {
-            self.current += 1;
-            let operator = self.tokens[self.current];
-            self.current += 1;
+            self.current += 2;
             let right = self.factor();
-            expr = Expr::Subtract(Box::new(expr), operator, Box::new(right))
+            expr = Expr::Subtract(Box::new(expr), Box::new(right))
         }
         expr
     }
@@ -71,45 +65,29 @@ impl Parser {
         let mut expr = self.power();
 
         if self.peek(TokenType::Multiply) == true {
-            self.current += 1;
-            let operator = self.tokens[self.current];
-            self.current += 1;
-            let right = self.unary();
-            expr = Expr::Multiply(Box::new(expr), operator, Box::new(right))
+            self.current += 2;
+            let right = self.power();
+            expr = Expr::Multiply(Box::new(expr), Box::new(right))
         } else if self.peek(TokenType::Divide) == true {
             self.current += 1;
-            let operator = self.tokens[self.current];
             self.current += 1;
-            let right = self.unary();
-            expr = Expr::Divide(Box::new(expr), operator, Box::new(right))
+            let right = self.power();
+            expr = Expr::Divide(Box::new(expr), Box::new(right))
         }
         expr
     }
 
     fn power(&mut self) -> Expr {
-        let mut expr = self.unary();
+        let mut expr = self.primary().unwrap();
 
         if self.peek(TokenType::Power) == true {
-            self.current += 1;
-            let operator = self.tokens[self.current];
-            self.current += 1;
+            self.current += 2;
             let right = self.factor();
-            expr = Expr::Power(Box::new(expr), operator, Box::new(right))
+            expr = Expr::Power(Box::new(expr), Box::new(right))
         }
         expr
     }
     
-    fn unary(&mut self) -> Expr {
-        if self.peek(TokenType::Negate) {
-            self.current += 1;
-            let operator = self.tokens[self.current];
-            self.current += 1;
-            let right = self.unary();
-            return Expr::Negate(operator, Box::new(right));
-        }
-        self.primary().unwrap()
-    }
-
     fn primary(&mut self) -> Result<Expr, &'static str> {
         if let TokenType::Number(_) = self.tokens[self.current].tokentype {
             return Ok(Expr::Number(self.tokens[self.current]));

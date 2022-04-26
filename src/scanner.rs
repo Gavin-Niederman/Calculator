@@ -1,4 +1,4 @@
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive(PartialEq, Clone, Copy)]
 pub enum TokenType {
     LeftParen,
     RightParen,
@@ -7,12 +7,11 @@ pub enum TokenType {
     Multiply,
     Divide,
     Power,
-    Negate,
     Number(i128),
     Eos
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 pub struct Token {
     pub tokentype: TokenType,
     pub location: usize,
@@ -50,7 +49,6 @@ where
                 },
                 '*' => self.add_token(TokenType::Multiply),
                 '/' => self.add_token(TokenType::Divide),
-                '!' => self.add_token(TokenType::Negate),
                 '^' => self.add_token(TokenType::Power),
                 current @ '0'..='9' => {
                     self.number(current)
@@ -63,12 +61,10 @@ where
                             other, self.current
                         );
                         self.error = true;
-                    } else {
-                        self.current -= 1;
                     }
                 }
             }
-            last = self.tokens[self.current].tokentype;
+            last = self.tokens.last().unwrap().tokentype;
             //Store location data for forming tokens
             self.current += 1;
             self.start = self.current;
